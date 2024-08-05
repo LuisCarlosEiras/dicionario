@@ -2,6 +2,7 @@ import streamlit as st
 import openai
 from dotenv import load_dotenv
 import os
+import re
 
 # Carrega as variáveis de ambiente
 load_dotenv()
@@ -12,18 +13,22 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def get_analogical_definition(word):
     prompt = f"""Você é um dicionário analógico da língua portuguesa. Forneça uma definição analógica para a palavra: {word}
 
-    Exemplos de definições analógicas:
+    É CRUCIAL que você estruture sua resposta EXATAMENTE nas seguintes categorias, usando exatamente estes títulos:
 
-    Comparação: cotejo, cotejamento, homeose, relação, paralelo, semelhança = confronto, confrontação, acareação, meças, colação (ant.), conferência, conferição, equiparação, contraste, identidade, identificação, aferição, graduação, graduamento, equiparência, combinação, símile, similitude, similaridade, afinidade, analogia, alegoria; dessemelhança, diferença, diversidade, paralelismo. 
-    Verbo: comparar, cotejar, igualar, confrontar, relacionar, contrapor, contrastar, colacionar, balançar, balancear, assemelhar, colocar nos pratos da balança, estabelecer confronto, estabelecer comparação, parva componere magnis, fazer cotejo, aferir; fazer um ou pôr em paralelo; equiparar, identificar, carear, acarear; concertar, contraprovar, conferir, opor, apodar, aquilatar, aferir por; pôr em face, apresentar em confronto. 
-    Adjetivo: comparativo, comparador, cotejador, alegórico, umbrátil, afim, análogo; similar, idêntico, semelhante; diferente, diverso, dessemelhante. 
-    Advérbio: comparativamente, & adj., em comparação, a par de.
+    Analogias:
+    Verbos:
+    Adjetivos:
+    Advérbios:
+    Frases:
 
-    Probabilidade: possibilidade, admissibilidade, plausibilidade, aparência, perspectiva, indícios que deixam presumir a verdade, racionalidade, parecença; viso, vislumbre, aparência, indício de verdade; presunção; evidência presuntiva, circunstancial; credibilidade; aparência boa/favorável/alvissareira/promissora/razoável; aspecto promissor, prospecto, esperanças bem fundadas, conjectura provável, alternativa; expectativa, probabilismo, cálculo das possibilidades/de probabilidades. 
-    Verbo: probabilizar, tornar (provável & adj.), ser (provável & adj.); ter seu lugar, dever, ter tudo para, estar com todo o jeito de, não haver razão para se perder a esperança, implicar; prometer bastante; levar jeito, ter toda probabilidade, parecer, ter boa perspectiva, ter expectativa de, aguardar; pressupor, contar com (crer). 
-    Adjetivo: provável, probábil, verossímil, alvissareiro, opinável, opinativo, esperável, expectável, esperanço, plausível, especioso, ostensível, ostensivo, bem fundado, bem figurado, benetrovato, razoável, racional, racionável, (p. us.), crível, presumível, presuntivo, aparente, natural. 
-    Advérbio: provavelmente & adj., com probabilidade, com toda a probabilidade, dez contra um, segundo as melhores aparências, prima facie, a todas as aparências. 
-    Frases: Tudo indica que…; As aparências são a favor de…; Há motivos para crer/para esperar…; Militam muitas possibilidades em favor de…; Se non é vero é bene trovato. Não há motivos para se descrer.
+    Para cada categoria, forneça uma lista de itens separados por ponto e vírgula. Se não houver itens para uma categoria específica, deixe-a vazia, mas mantenha o título.
+
+    Exemplo de formato da resposta:
+    Analogias: item1; item2; item3
+    Verbos: verbo1; verbo2; verbo3
+    Adjetivos: adjetivo1; adjetivo2; adjetivo3
+    Advérbios: advérbio1; advérbio2; advérbio3
+    Frases: frase1; frase2; frase3
 
     Forneça uma definição analógica para a palavra: {word}
     """
@@ -35,7 +40,7 @@ def get_analogical_definition(word):
                 {"role": "system", "content": "Você é um assistente especializado em fornecer definições analógicas em português."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=500,
+            max_tokens=1000,
             n=1,
             temperature=0.7,
         )
@@ -43,6 +48,21 @@ def get_analogical_definition(word):
     except openai.error.OpenAIError as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
+
+def parse_response(response):
+    categories = ['Analogias', 'Verbos', 'Adjetivos', 'Advérbios', 'Frases']
+    parsed = {}
+    
+    for category in categories:
+        pattern = f"{category}:(.+?)(?={categories[categories.index(category)+1]}:|$)"
+        match = re.search(pattern, response, re.DOTALL)
+        if match:
+            items = [item.strip() for item in match.group(1).split(';') if item.strip()]
+            parsed[category] = items
+        else:
+            parsed[category] = []
+    
+    return parsed
 
 st.title("Dicionário Analógico da Língua Portuguesa")
 
@@ -56,7 +76,14 @@ if word:
     with st.spinner('Buscando definição analógica...'):
         definition = get_analogical_definition(word)
     if definition:
-        st.write(definition)
+        parsed_definition = parse_response(definition)
+        for category, items in parsed_definition.items():
+            st.subheader(category)
+            if items:
+                for item in items:
+                    st.write(f"- {item}")
+            else:
+                st.write("Nenhum item encontrado para esta categoria.")
 
 # Adicione isso no final do seu script para verificar se a chave API está definida
 if not openai.api_key:
