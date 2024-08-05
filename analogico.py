@@ -21,7 +21,7 @@ def get_analogical_definition(word):
     Advérbios:
     Frases:
 
-    Para cada categoria, forneça EXATAMENTE 10 itens separados por ponto e vírgula. Se não houver 10 itens para uma categoria, repita os itens existentes ou crie variações para chegar a 10.
+    Para cada categoria, forneça EXATAMENTE 20 itens separados por vírgula. Se não houver 20 itens para uma categoria, crie variações para chegar a 20.
 
     Exemplo de formato da resposta:
     Analogias: item1; item2; item3; item4; item5; item6; item7; item8; item9; item10; item11; item12; item13; item14; item15; item16; item17; item18; item19; item20
