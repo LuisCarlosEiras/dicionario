@@ -53,8 +53,12 @@ def parse_response(response):
     categories = ['Analogias', 'Verbos', 'Adjetivos', 'Advérbios', 'Frases']
     parsed = {}
     
-    for category in categories:
-        pattern = f"{category}:(.+?)(?={categories[categories.index(category)+1]}:|$)"
+    for i, category in enumerate(categories):
+        if i < len(categories) - 1:
+            pattern = f"{category}:(.+?)(?={categories[i+1]}:)"
+        else:
+            pattern = f"{category}:(.+)"
+        
         match = re.search(pattern, response, re.DOTALL)
         if match:
             items = [item.strip() for item in match.group(1).split(';') if item.strip()]
