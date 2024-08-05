@@ -42,7 +42,7 @@ def get_analogical_definition(word):
             ],
             max_tokens=2000,
             n=1,
-            temperature=0.7,
+            temperature=0.3,
         )
         return response.choices[0].message['content'].strip()
     except openai.error.OpenAIError as e:
