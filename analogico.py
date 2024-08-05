@@ -11,7 +11,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def get_analogical_definition(word):
-    prompt = f"""Você é um dicionário analógico da língua portuguesa. Forneça uma definição analógica para a palavra: {word}
+    prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Forneça uma definição analógica para a palavra: {word}
 
     É CRUCIAL que você estruture sua resposta EXATAMENTE nas seguintes categorias, usando exatamente estes títulos:
 
@@ -39,7 +39,7 @@ def get_analogical_definition(word):
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Você é um assistente especializado em fornecer definições analógicas em português."},
+                {"role": "system", "content": "Você é um assistente especializado em fornecer definições analógicas em português do Brasil."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=3500,
