@@ -81,7 +81,7 @@ st.write("""
 Se num dicionário comum se procura o significado exato de uma palavra, neste Dicionário Analógico se procura o inverso: o máximo de significados de uma palavra.
 """)
 
-word = st.text_input("Digite uma palavra para buscar sua definição analógica:")
+word = st.text_input("Digite uma palavra para ver suas analogias:")
 
 if word:
     with st.spinner('Buscando definição analógica...'):
