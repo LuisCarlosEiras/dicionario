@@ -35,9 +35,9 @@ def get_analogical_definition(word):
                 {"role": "system", "content": "Você é um assistente especializado em fornecer definições analógicas em português."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=500,
+            max_tokens=1000,
             n=1,
-            temperature=0.7,
+            temperature=0.3,
         )
         return response.choices[0].message['content'].strip()
     except openai.error.OpenAIError as e:
