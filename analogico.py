@@ -24,8 +24,8 @@ def get_analogical_definition(word):
     Para cada categoria, forneça EXATAMENTE 10 itens separados por ponto e vírgula. Se não houver 10 itens para uma categoria, repita os itens existentes ou crie variações para chegar a 10.
 
     Exemplo de formato da resposta:
-    Analogias: item1; item2; item3; item4; item5; item6; item7; item8; item9; item10
-    Verbos: verbo1; verbo2; verbo3; verbo4; verbo5; verbo6; verbo7; verbo8; verbo9; verbo10
+    Analogias: item1; item2; item3; item4; item5; item6; item7; item8; item9; item10; item11; item12; item13; item14; item15; item16; item17; item18; item19; item20
+    Verbos: verbo1; verbo2; verbo3; verbo4; verbo5; verbo6; verbo7; verbo8; verbo9; verbo10; verbo 11; verbo12; verbo 13; verbo14; verbo15; verbo16; verbo17; verbo18; verbo19; verbo20
     Adjetivos: adjetivo1; adjetivo2; adjetivo3; adjetivo4; adjetivo5; adjetivo6; adjetivo7; adjetivo8; adjetivo9; adjetivo10
     Advérbios: advérbio1; advérbio2; advérbio3; advérbio4; advérbio5; advérbio6; advérbio7; advérbio8; advérbio9; advérbio10
     Frases: frase1; frase2; frase3; frase4; frase5; frase6; frase7; frase8; frase9; frase10
