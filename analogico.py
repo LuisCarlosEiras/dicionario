@@ -28,8 +28,7 @@ def get_analogical_definition(word):
     Verbos: verbo1; verbo2; verbo3; ...; verbo30
     Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...
     Advérbios: advérbio1; advérbio2; advérbio3; ...
-    Frases: Frase completa 1.; Frase completa 2.; Frase completa 3.; Frase completa 4.; Frase completa 5.
-    Forneça uma definição analógica para a palavra: {word}
+    Frases: Frase completa 1.; Frase completa 2.; Frase completa 3.; Frase completa 4.; Frase completa 5...; Frase completa 10;    Forneça uma definição analógica para a palavra: {word}
     """
     try:
         response = model.generate_content(prompt)
