@@ -14,36 +14,26 @@ model = genai.GenerativeModel('gemini-pro')
 
 def get_analogical_definition(word):
     prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Forneça uma definição analógica para a palavra: {word}
-
     É CRUCIAL que você estruture sua resposta EXATAMENTE nas seguintes categorias, usando exatamente estes títulos:
-
     Analogias:
     Verbos:
     Adjetivos:
     Advérbios:
     Frases:
-
     Para a categoria Verbos, forneça EXATAMENTE 30 itens separados por ponto e vírgula.
     Para todas as outras categorias, forneça EXATAMENTE 20 itens separados por ponto e vírgula.
     Se não houver itens suficientes para uma categoria, repita os itens existentes ou crie variações para chegar ao número necessário.
-
     Exemplo de formato da resposta:
     Analogias: item1; item2; item3; ...; item20
     Verbos: verbo1; verbo2; verbo3; ...; verbo30
     Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...; adjetivo20
-    Advérbios: advérbio1; advérbio2; advérbio3; ...; advérbio20
+    Advérbios: advérbio1; advérbio2; advérbio3; ...; adjetivo20
     Frases: frase1; frase2; frase3; ...; frase20
-
     Forneça uma definição analógica para a palavra: {word}
     """
-
     try:
-        response = model.generate_text(
-            prompt=prompt,
-            max_tokens=3500,
-            temperature=0.7,
-        )
-        return response['choices'][0]['text'].strip()
+        response = model.generate_content(prompt)
+        return response.text
     except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
@@ -72,8 +62,7 @@ def parse_response(response):
     
     return parsed
 
-st.title("**Dicionário Analógico** da Língua Portuguesa")
-
+st.title("Dicionário Analógico da Língua Portuguesa")
 st.write("""
 Se num dicionário comum se procura o significado exato de uma palavra, neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
 """)
