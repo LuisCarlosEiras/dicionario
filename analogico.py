@@ -1,5 +1,5 @@
 import streamlit as st
-from google.generativeai import gemini_pro
+import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 import re
@@ -7,8 +7,10 @@ import re
 # Carrega as variáveis de ambiente
 load_dotenv()
 
-# Configura a API do Gemini-Pro
-gemini_pro.api_key = os.getenv("GEMINI_PRO_API_KEY")
+# Configura a API do Google Gemini-Pro
+google_api_key = os.getenv("GOOGLE_API_KEY")
+genai.api_key = google_api_key
+model = genai.GenerativeModel('gemini-pro')
 
 def get_analogical_definition(word):
     prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Forneça uma definição analógica para a palavra: {word}
@@ -36,18 +38,13 @@ def get_analogical_definition(word):
     """
 
     try:
-        response = gemini_pro.ChatCompletion.create(
-            model="gemini-pro",
-            messages=[
-                {"role": "system", "content": "Você é um assistente especializado em fornecer definições analógicas em português do Brasil."},
-                {"role": "user", "content": prompt}
-            ],
+        response = model.generate(
+            prompt=prompt,
             max_tokens=3500,
-            n=1,
             temperature=0.7,
         )
-        return response.choices[0].message['content'].strip()
-    except gemini_pro.error.APIError as e:
+        return response['choices'][0]['text'].strip()
+    except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
 
@@ -78,7 +75,7 @@ def parse_response(response):
 st.title("**Dicionário Analógico** da Língua Portuguesa")
 
 st.write("""
-Num dicionário comum se procura o significado exato de uma palavra. Neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
+Se num dicionário comum se procura o significado exato de uma palavra, neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
 """)
 
 word = st.text_input("Digite uma palavra para ver suas analogias:")
@@ -93,5 +90,5 @@ if word:
             st.write(", ".join(items))
 
 # Adicione isso no final do seu script para verificar se a chave API está definida
-if not gemini_pro.api_key:
-    st.error("A chave API do Gemini-Pro não está definida. Por favor, configure a variável de ambiente GEMINI_PRO_API_KEY.")
+if not google_api_key:
+    st.error("A chave API do Google não está definida. Por favor, configure a variável de ambiente GOOGLE_API_KEY.")
