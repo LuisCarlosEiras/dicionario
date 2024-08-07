@@ -9,7 +9,7 @@ load_dotenv()
 
 # Configura a API do Google Gemini-Pro
 google_api_key = os.getenv("GOOGLE_API_KEY")
-genai.api_key = google_api_key
+genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel('gemini-pro')
 
 def get_analogical_definition(word):
@@ -38,7 +38,7 @@ def get_analogical_definition(word):
     """
 
     try:
-        response = model.generate(
+        response = model.generate_text(
             prompt=prompt,
             max_tokens=3500,
             temperature=0.7,
