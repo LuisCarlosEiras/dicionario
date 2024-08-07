@@ -20,15 +20,15 @@ def get_analogical_definition(word):
     Adjetivos:
     Advérbios:
     Frases:
-    Para a categoria Verbos, forneça EXATAMENTE 30 itens separados por ponto e vírgula.
-    Para todas as outras categorias, forneça EXATAMENTE 20 itens separados por ponto e vírgula.
+    Para a categoria Verbos, forneça até 30 itens separados por ponto e vírgula.
+    Para todas as outras categorias, forneça até 20 itens separados por ponto e vírgula.
     Não repita palavras ou frases em nenhuma categoria. Se não houver itens suficientes para uma categoria, deixe o restante em branco.
     Exemplo de formato da resposta:
-    Analogias: item1; item2; item3; ...; item20
-    Verbos: verbo1; verbo2; verbo3; ...; verbo30
-    Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...; adjetivo20
-    Advérbios: advérbio1; advérbio2; advérbio3; ...; adjetivo20
-    Frases: frase1; frase2; frase3; ...; frase20
+    Analogias: item1; item2; item3; ...
+    Verbos: verbo1; verbo2; verbo3; ...
+    Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...
+    Advérbios: advérbio1; advérbio2; advérbio3; ...
+    Frases: frase1; frase2; frase3; ...
     Forneça uma definição analógica para a palavra: {word}
     """
     try:
@@ -43,7 +43,7 @@ def parse_response(response):
     parsed = {}
     
     for category in categories:
-        pattern = f"{category}:(.+?)(?={categories[categories.index(category)+1]}:|$)"
+        pattern = f"{category}:(.+?)(?={('|'.join(categories))}:|$)"
         match = re.search(pattern, response, re.DOTALL)
         if match:
             items = [item.strip() for item in match.group(1).split(';') if item.strip()]
