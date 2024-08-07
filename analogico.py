@@ -22,7 +22,7 @@ def get_analogical_definition(word):
     Frases:
     Para a categoria Verbos, forneça EXATAMENTE 30 itens separados por ponto e vírgula.
     Para todas as outras categorias, forneça EXATAMENTE 20 itens separados por ponto e vírgula.
-    Se não houver itens suficientes para uma categoria, repita os itens existentes ou crie variações para chegar ao número necessário.
+    Não repita palavras ou frases em nenhuma categoria. Se não houver itens suficientes para uma categoria, deixe o restante em branco.
     Exemplo de formato da resposta:
     Analogias: item1; item2; item3; ...; item20
     Verbos: verbo1; verbo2; verbo3; ...; verbo30
@@ -42,29 +42,22 @@ def parse_response(response):
     categories = ['Analogias', 'Verbos', 'Adjetivos', 'Advérbios', 'Frases']
     parsed = {}
     
-    for i, category in enumerate(categories):
-        if i < len(categories) - 1:
-            pattern = f"{category}:(.+?)(?={categories[i+1]}:)"
-        else:
-            pattern = f"{category}:(.+)"
-        
+    for category in categories:
+        pattern = f"{category}:(.+?)(?={categories[categories.index(category)+1]}:|$)"
         match = re.search(pattern, response, re.DOTALL)
         if match:
             items = [item.strip() for item in match.group(1).split(';') if item.strip()]
-            # Ensure we have the correct number of items
-            if category == 'Verbos':
-                items = (items * ((30 + len(items) - 1) // len(items)))[:30]
-            else:
-                items = (items * ((20 + len(items) - 1) // len(items)))[:20]
+            # Remove duplicates while preserving order
+            items = list(dict.fromkeys(items))
             parsed[category] = items
         else:
-            parsed[category] = ['N/A'] * (30 if category == 'Verbos' else 20)
+            parsed[category] = []
     
     return parsed
 
 st.title("Dicionário Analógico da Língua Portuguesa")
 st.write("""
-Se num dicionário comum se procura o significado exato de uma palavra, neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
+Se num dicionário comum se procura o significado exato de uma palavra, neste Dicionário Analógico se procura o inverso: o máximo de significados de uma palavra.
 """)
 
 word = st.text_input("Digite uma palavra para ver suas analogias:")
@@ -75,7 +68,7 @@ if word:
     if definition:
         parsed_definition = parse_response(definition)
         for category, items in parsed_definition.items():
-            st.subheader(f"{category}")
+            st.subheader(category)
             st.write(", ".join(items))
 
 # Adicione isso no final do seu script para verificar se a chave API está definida
