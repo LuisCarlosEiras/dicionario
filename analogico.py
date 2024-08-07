@@ -59,7 +59,7 @@ def parse_response(response):
 
 st.title("Dicionário Analógico da Língua Portuguesa")
 st.write("""
-Num dicionário comum se procura o significado exato de uma palavra. Neste Dicionário Analógico se procura o inverso: o máximo de significados de uma palavra.
+Num dicionário comum se procura o significado exato de uma palavra. Neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
 """)
 
 word = st.text_input("Digite uma palavra para ver suas analogias:")
