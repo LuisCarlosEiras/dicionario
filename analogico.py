@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from google.generativeai import gemini_pro
 from dotenv import load_dotenv
 import os
 import re
@@ -7,8 +7,8 @@ import re
 # Carrega as variáveis de ambiente
 load_dotenv()
 
-# Configura a API do OpenAI
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Configura a API do Gemini-Pro
+gemini_pro.api_key = os.getenv("GEMINI_PRO_API_KEY")
 
 def get_analogical_definition(word):
     prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Forneça uma definição analógica para a palavra: {word}
@@ -36,8 +36,8 @@ def get_analogical_definition(word):
     """
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+        response = gemini_pro.ChatCompletion.create(
+            model="gemini-pro",
             messages=[
                 {"role": "system", "content": "Você é um assistente especializado em fornecer definições analógicas em português do Brasil."},
                 {"role": "user", "content": prompt}
@@ -47,7 +47,7 @@ def get_analogical_definition(word):
             temperature=0.7,
         )
         return response.choices[0].message['content'].strip()
-    except openai.error.OpenAIError as e:
+    except gemini_pro.error.APIError as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
 
@@ -75,10 +75,10 @@ def parse_response(response):
     
     return parsed
 
-st.title("Dicionário Analógico da Língua Portuguesa")
+st.title("**Dicionário Analógico** da Língua Portuguesa")
 
 st.write("""
-Se num dicionário comum se procura o significado exato de uma palavra, neste Dicionário Analógico se procura o inverso: o máximo de significados de uma palavra.
+Num dicionário comum se procura o significado exato de uma palavra. Neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
 """)
 
 word = st.text_input("Digite uma palavra para ver suas analogias:")
@@ -89,9 +89,9 @@ if word:
     if definition:
         parsed_definition = parse_response(definition)
         for category, items in parsed_definition.items():
-            st.subheader(f"{category} ({len(items)})")
+            st.subheader(f"{category}")
             st.write(", ".join(items))
 
 # Adicione isso no final do seu script para verificar se a chave API está definida
-if not openai.api_key:
-    st.error("A chave API do OpenAI não está definida. Por favor, configure a variável de ambiente OPENAI_API_KEY.")
+if not gemini_pro.api_key:
+    st.error("A chave API do Gemini-Pro não está definida. Por favor, configure a variável de ambiente GEMINI_PRO_API_KEY.")
