@@ -20,15 +20,16 @@ def get_analogical_definition(word):
     Adjetivos:
     Advérbios:
     Frases:
-    Para a categoria Verbos, forneça até 30 itens separados por ponto e vírgula.
-    Para todas as outras categorias, forneça até 20 itens separados por ponto e vírgula.
+    Para a categoria Verbos, forneça EXATAMENTE 30 itens separados por ponto e vírgula.
+    Para as categorias Analogias, Adjetivos e Advérbios, forneça até 20 itens separados por ponto e vírgula.
+    Para a categoria Frases, forneça 10 frases completas que façam sentido, utilizando a palavra em contexto. Separe as frases com ponto e vírgula.
     Não repita palavras ou frases em nenhuma categoria. Se não houver itens suficientes para uma categoria, deixe o restante em branco.
     Exemplo de formato da resposta:
     Analogias: item1; item2; item3; ...
-    Verbos: verbo1; verbo2; verbo3; ...
+    Verbos: verbo1; verbo2; verbo3; ...; verbo30
     Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...
     Advérbios: advérbio1; advérbio2; advérbio3; ...
-    Frases: frase1; frase2; frase3; ...
+    Frases: Frase completa 1.; Frase completa 2.; Frase completa 3.; Frase completa 4.; Frase completa 5.
     Forneça uma definição analógica para a palavra: {word}
     """
     try:
@@ -46,9 +47,12 @@ def parse_response(response):
         pattern = f"{category}:(.+?)(?={('|'.join(categories))}:|$)"
         match = re.search(pattern, response, re.DOTALL)
         if match:
-            items = [item.strip() for item in match.group(1).split(';') if item.strip()]
-            # Remove duplicates while preserving order
-            items = list(dict.fromkeys(items))
+            if category == 'Frases':
+                items = [item.strip() for item in match.group(1).split(';') if item.strip()]
+            else:
+                items = [item.strip() for item in match.group(1).split(';') if item.strip()]
+                # Remove duplicates while preserving order
+                items = list(dict.fromkeys(items))
             parsed[category] = items
         else:
             parsed[category] = []
@@ -69,7 +73,11 @@ if word:
         parsed_definition = parse_response(definition)
         for category, items in parsed_definition.items():
             st.subheader(category)
-            st.write(", ".join(items))
+            if category == 'Frases':
+                for item in items:
+                    st.write(f"• {item}")
+            else:
+                st.write(", ".join(items))
 
 # Adicione isso no final do seu script para verificar se a chave API está definida
 if not google_api_key:
