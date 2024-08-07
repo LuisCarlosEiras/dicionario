@@ -4,10 +4,7 @@ from dotenv import load_dotenv
 import os
 import re
 
-# Carrega as variáveis de ambiente
 load_dotenv()
-
-# Configura a API do Google Gemini-Pro
 google_api_key = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel('gemini-pro')
@@ -51,7 +48,6 @@ def parse_response(response):
                 items = [item.strip() for item in match.group(1).split(';') if item.strip()]
             else:
                 items = [item.strip() for item in match.group(1).split(';') if item.strip()]
-                # Remove duplicates while preserving order
                 items = list(dict.fromkeys(items))
             parsed[category] = items
         else:
@@ -61,7 +57,7 @@ def parse_response(response):
 
 st.title("Dicionário Analógico da Língua Portuguesa")
 st.write("""
-Num dicionário comum se procura o significado exato de uma palavra. Neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
+Num dicionário comum se procura o significado exato de uma palavra. Neste Dicionário Analógico se procura o inverso: o máximo de significados de uma palavra.
 """)
 
 word = st.text_input("Digite uma palavra para ver suas analogias:")
@@ -75,10 +71,9 @@ if word:
             st.subheader(category)
             if category == 'Frases':
                 for item in items:
-                    st.write(f"• {item}")
+                    st.write(f"{item}")
             else:
                 st.write(", ".join(items))
 
-# Adicione isso no final do seu script para verificar se a chave API está definida
 if not google_api_key:
     st.error("A chave API do Google não está definida. Por favor, configure a variável de ambiente GOOGLE_API_KEY.")
