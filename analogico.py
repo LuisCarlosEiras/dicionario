@@ -20,14 +20,14 @@ def get_analogical_definition(word):
     Para a categoria Verbos, forneça EXATAMENTE 30 itens separados por ponto e vírgula.
     Não coloque asteriscos depois de cada categoria.
     Não coloque ponto antes de cada resposta.
-    Para as categorias Analogias, Adjetivos e Advérbios, forneça até 20 itens separados por ponto e vírgula.
+    Para as categorias Analogias, Adjetivos e Advérbios, forneça até 40 itens separados por ponto e vírgula.
     Para a categoria Frases, forneça 10 frases completas que façam sentido, utilizando a palavra em contexto. Separe as frases com ponto e vírgula.
     Não repita palavras ou frases em nenhuma categoria. Se não houver itens suficientes para uma categoria, deixe o restante em branco.
     Exemplo de formato da resposta:
     Analogias: item1; item2; item3; ...; item40.
     Verbos: verbo1; verbo2; verbo3; ...; verbo30.
-    Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...; adjetivo 20.
-    Advérbios: advérbio1; advérbio2; advérbio3; ...; advérbio 20.
+    Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...; adjetivo 40.
+    Advérbios: advérbio1; advérbio2; advérbio3; ...; advérbio 40.
     Frases: Frase completa 1.; Frase completa 2.; Frase completa 3.; Frase completa 4.; Frase completa 5...; Frase completa 10. 
     Forneça uma definição analógica para a palavra: {word}
     """
