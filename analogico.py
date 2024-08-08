@@ -14,7 +14,7 @@ model = genai.GenerativeModel('gemini-pro')
 
 # Função para obter a definição analógica
 def get_analogical_definition(word):
-prompt_text = f"""
+        prompt_text = f"""
 Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Para a palavra '{word}', forneça uma definição analógica estruturada nas seguintes categorias:
 
 Analogias: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
