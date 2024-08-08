@@ -16,31 +16,29 @@ if not google_api_key:
 # Configura a API da Google Generative AI
 genai.configure(api_key=google_api_key)
 
-# Função para obter a definição analógica
 def get_analogical_definition(word):
     prompt_text = f"""
 Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Para a palavra '{word}', forneça uma definição analógica estruturada nas seguintes categorias:
-
 Analogias: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
 Verbos: exatamente 30 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
 Adjetivos: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
 Advérbios: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
 Frases: 10 frases completas, separadas por ponto e vírgula. Sempre que possível, utilize termos da ciência e tecnologia atuais.
-
 Não repita palavras ou frases. Se não houver itens suficientes, deixe o restante em branco.
 """
     try:
         response = genai.generate_text(prompt=prompt_text)
-        return response.result  # Use o atributo que contém o texto gerado
+        if not response.result:
+            st.error("A API não retornou uma resposta válida.")
+            return None
+        return response.result
     except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
 
-# Função para analisar a resposta gerada
 def parse_response(response):
     categories = ['Analogias', 'Verbos', 'Adjetivos', 'Advérbios', 'Frases']
     parsed = {}
-
     for category in categories:
         pattern = f"{category}:(.+?)(?=({'|'.join(categories)}):|$)"
         match = re.search(pattern, response, re.DOTALL)
@@ -50,10 +48,8 @@ def parse_response(response):
             parsed[category] = items
         else:
             parsed[category] = []
-
     return parsed
 
-# Interface do Streamlit
 st.title("Dicionário Analógico da Língua Portuguesa")
 st.write("""
 Num dicionário comum se procura o significado exato de uma palavra. Neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
@@ -72,4 +68,7 @@ if word:
                 for item in items:
                     st.write(f"- {item}")
             else:
-                st.write(", ".join(items))
+                st.write('\n'.join(items))
+
+    if st.button("Nova definição"):
+        st.experimental_rerun()
