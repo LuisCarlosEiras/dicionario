@@ -27,7 +27,7 @@ Frases: 10 frases completas, separadas por ponto e vírgula. Sempre que possíve
 Não repita palavras ou frases. Se não houver itens suficientes, deixe o restante em branco.
 """
     try:
-        response = genai.generate_text(prompt=prompt_text)
+        response = genai.generate_text(prompt=prompt_text, model="text-generation-v1")
         if not response.result:
             st.error("A API não retornou uma resposta válida.")
             return None
