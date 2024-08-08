@@ -3,7 +3,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 import re
-from googletrans import Translator 
+from googletrans import Translator
 
 # Carrega as variáveis de ambiente
 load_dotenv()
@@ -35,10 +35,17 @@ def get_analogical_definition(word):
     
     try:
         response = genai.generate_text(prompt=prompt_text)
-        english_response = response.candidates[0]['output']
-        # Traduz a resposta para português
-        translated_response = translator.translate(english_response, dest='pt').text
-        return translated_response
+        
+        # Verifica se há candidatos e se o primeiro candidato possui a chave 'output'
+        if response.candidates and 'output' in response.candidates[0]:
+            english_response = response.candidates[0]['output']
+            # Traduz a resposta para português
+            translated_response = translator.translate(english_response, dest='pt').text
+            return translated_response
+        else:
+            st.error("A resposta da API não contém dados esperados.")
+            return None
+            
     except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
