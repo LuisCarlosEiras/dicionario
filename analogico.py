@@ -20,6 +20,7 @@ Frases: 10 frases completas, separadas por ponto e vírgula. Sempre que possíve
 
 Não repita palavras ou frases. Se não houver itens suficientes, deixe o restante em branco.
 """
+  """
     try:
         response = model.generate_content(prompt)
         return response.text
