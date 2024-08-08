@@ -3,7 +3,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 import re
-from googletrans import Translator
+from googletrans import Translator 
 
 # Carrega as variáveis de ambiente
 load_dotenv()
