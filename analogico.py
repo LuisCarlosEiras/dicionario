@@ -4,13 +4,17 @@ from dotenv import load_dotenv
 import os
 import re
 
+# Carrega as variáveis de ambiente
 load_dotenv()
 google_api_key = os.getenv("GOOGLE_API_KEY")
+
+# Configura a API da Google Generative AI
 genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel('gemini-pro')
 
+# Função para obter a definição analógica
 def get_analogical_definition(word):
-  prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Para a palavra '{word}', forneça uma definição analógica estruturada nas seguintes categorias:
+    prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Para a palavra '{word}', forneça uma definição analógica estruturada nas seguintes categorias:
 
 Analogias: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
 Verbos: exatamente 30 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
@@ -20,14 +24,14 @@ Frases: 10 frases completas, separadas por ponto e vírgula. Sempre que possíve
 
 Não repita palavras ou frases. Se não houver itens suficientes, deixe o restante em branco.
 """
-  """
     try:
-        response = model.generate_content(prompt)
+        response = model.generate_content(prompt=prompt)
         return response.text
     except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
 
+# Função para analisar a resposta gerada
 def parse_response(response):
     categories = ['Analogias', 'Verbos', 'Adjetivos', 'Advérbios', 'Frases']
     parsed = {}
@@ -36,17 +40,15 @@ def parse_response(response):
         pattern = f"{category}:(.+?)(?={('|'.join(categories))}:|$)"
         match = re.search(pattern, response, re.DOTALL)
         if match:
-            if category == 'Frases':
-                items = [item.strip() for item in match.group(1).split(';') if item.strip()]
-            else:
-                items = [item.strip() for item in match.group(1).split(';') if item.strip()]
-                items = list(dict.fromkeys(items))
+            items = [item.strip() for item in match.group(1).split(';') if item.strip()]
+            items = list(dict.fromkeys(items))  # Remove duplicatas
             parsed[category] = items
         else:
             parsed[category] = []
     
     return parsed
 
+# Interface do Streamlit
 st.title("Dicionário Analógico da Língua Portuguesa")
 st.write("""
 Num dicionário comum se procura o significado exato de uma palavra. Neste **Dicionário Analógico** se procura o inverso: o máximo de significados de uma palavra.
