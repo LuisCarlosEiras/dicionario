@@ -27,7 +27,7 @@ Não repita palavras ou frases. Se não houver itens suficientes, deixe o restan
 """
 
 response = GenerativeModel.generate_content(content=prompt_text)
-        return response.text
+        return response.text 
     except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
