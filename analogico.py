@@ -31,7 +31,7 @@ Não repita palavras ou frases. Se não houver itens suficientes, deixe o restan
 """
     try:
         response = genai.generate_text(prompt=prompt_text)
-        return response.result  # Use o atributo que contém o texto gerado
+        return response.candidates[0]['output']  # Acessa a resposta correta
     except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
