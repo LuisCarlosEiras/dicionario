@@ -10,18 +10,16 @@ genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel('gemini-pro')
 
 def get_analogical_definition(word):
-   prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Para a palavra '{word}', forneça uma definição analógica estruturada nas seguintes categorias:
+  prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Para a palavra '{word}', forneça uma definição analógica estruturada nas seguintes categorias:
 
-Analogias: até 40 itens, separados por ponto e vírgula.
-Verbos: exatamente 30 itens, separados por ponto e vírgula.
-Adjetivos: até 40 itens, separados por ponto e vírgula.
-Advérbios: até 40 itens, separados por ponto e vírgula.
-Frases: 10 frases completas, separadas por ponto e vírgula.
+Analogias: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
+Verbos: exatamente 30 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
+Adjetivos: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
+Advérbios: até 40 itens, separados por ponto e vírgula. Sempre que possível, inclua termos da ciência e tecnologia atuais.
+Frases: 10 frases completas, separadas por ponto e vírgula. Sempre que possível, utilize termos da ciência e tecnologia atuais.
 
 Não repita palavras ou frases. Se não houver itens suficientes, deixe o restante em branco.
 """
-
-    """
     try:
         response = model.generate_content(prompt)
         return response.text
