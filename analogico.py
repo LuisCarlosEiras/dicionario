@@ -15,7 +15,6 @@ if not google_api_key:
 
 # Configura a API da Google Generative AI
 genai.configure(api_key=google_api_key)
-model = genai.GenerativeModel('gemini-pro')
 
 # Função para obter a definição analógica
 def get_analogical_definition(word):
@@ -30,10 +29,9 @@ Frases: 10 frases completas, separadas por ponto e vírgula. Sempre que possíve
 
 Não repita palavras ou frases. Se não houver itens suficientes, deixe o restante em branco.
 """
-
     try:
-        response = model.generate_content(content=prompt_text)
-        return response.text
+        response = genai.generate_text(prompt=prompt_text)
+        return response.result  # Use o atributo que contém o texto gerado
     except Exception as e:
         st.error(f"Ocorreu um erro ao processar sua solicitação: {str(e)}")
         return None
