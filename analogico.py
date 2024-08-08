@@ -10,26 +10,17 @@ genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel('gemini-pro')
 
 def get_analogical_definition(word):
-    prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Forneça uma definição analógica para a palavra: {word}
-    É CRUCIAL que você estruture sua resposta EXATAMENTE nas seguintes categorias, usando exatamente estes títulos:
-    Analogias:
-    Verbos:
-    Adjetivos:
-    Advérbios:
-    Frases:
-    Para a categoria Verbos, forneça EXATAMENTE 30 itens separados por ponto e vírgula.
-    Não coloque asteriscos depois de cada categoria.
-    Não coloque ponto antes de cada resposta.
-    Para as categorias Analogias, Adjetivos e Advérbios, forneça até 40 itens separados por ponto e vírgula.
-    Para a categoria Frases, forneça 10 frases completas que façam sentido, utilizando a palavra em contexto. Separe as frases com ponto e vírgula.
-    Não repita palavras ou frases em nenhuma categoria. Se não houver itens suficientes para uma categoria, deixe o restante em branco.
-    Exemplo de formato da resposta:
-    Analogias: item1; item2; item3; ...; item40.
-    Verbos: verbo1; verbo2; verbo3; ...; verbo30.
-    Adjetivos: adjetivo1; adjetivo2; adjetivo3; ...; adjetivo 40.
-    Advérbios: advérbio1; advérbio2; advérbio3; ...; advérbio 40.
-    Frases: Frase completa 1.; Frase completa 2.; Frase completa 3.; Frase completa 4.; Frase completa 5...; Frase completa 10. 
-    Forneça uma definição analógica para a palavra: {word}
+   prompt = f"""Você é um dicionário analógico da língua portuguesa. Responda sempre em português do Brasil. Para a palavra '{word}', forneça uma definição analógica estruturada nas seguintes categorias:
+
+Analogias: até 40 itens, separados por ponto e vírgula.
+Verbos: exatamente 30 itens, separados por ponto e vírgula.
+Adjetivos: até 40 itens, separados por ponto e vírgula.
+Advérbios: até 40 itens, separados por ponto e vírgula.
+Frases: 10 frases completas, separadas por ponto e vírgula.
+
+Não repita palavras ou frases. Se não houver itens suficientes, deixe o restante em branco.
+"""
+
     """
     try:
         response = model.generate_content(prompt)
