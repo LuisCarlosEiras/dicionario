@@ -1,52 +1,3 @@
-import os
-import streamlit as st
-from dotenv import load_dotenv
-from groq import Groq
-
-# Carrega as variáveis de ambiente
-load_dotenv()
-
-class GroqAPI:
-    def __init__(self, model_name: str):
-        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model_name = model_name
-
-    def get_response(self, messages):
-        response = self.client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=0,
-            max_tokens=4096,
-            stream=False,  # Aqui, não estamos usando streaming para facilitar o processamento
-            stop=None,
-        )
-        # Debug: Imprimir a resposta completa para verificar a estrutura
-        st.write(response)
-        # Ajuste o acesso ao conteúdo da resposta conforme necessário
-        return response.choices[0].message.content if response.choices else ''
-
-class Message:
-    system_prompt = "Por favor, escreva todas as respostas em português do Brasil, usando o formato de analogia com categorias como Substantivos, Verbos, Adjetivos, Advérbios e Frases."
-
-    def __init__(self):
-        if "messages" not in st.session_state:
-            st.session_state.messages = [{"role": "system", "content": self.system_prompt}]
-
-    def add(self, role: str, content: str):
-        st.session_state.messages.append({"role": role, "content": content})
-
-    def get_messages(self):
-        return st.session_state.messages
-
-class ModelSelector:
-    def __init__(self):
-        self.models = ["llama3-70b-8192", "llama3-8b-8192", "mixtral-8x7b-32768", "gemma-7b-it"]
-
-    def select(self):
-        with st.sidebar:
-            st.sidebar.title("Dicionário Analógico da Língua Portuguesa")
-            return st.selectbox("Selecione um modelo:", self.models)
-
 def main():
     st.title("Dicionário Analógico da Língua Portuguesa")
     user_input = st.text_input("Digite uma palavra ou conceito:")
@@ -67,6 +18,7 @@ def main():
         message.add("assistant", response)
         
         # Exibe a resposta formatada
+        st.subheader(f"Analogia para '{user_input}':")
         st.write(response)
 
 if __name__ == "__main__":
