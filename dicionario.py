@@ -23,7 +23,7 @@ class GroqAPI:
         # Debug: Imprimir a resposta completa para verificar a estrutura
         st.write(response)
         # Ajuste o acesso ao conteúdo da resposta conforme necessário
-        return response.choices[0].message['content'] if response.choices else ''
+        return response.choices[0].message.content if response.choices else ''
 
 class Message:
     system_prompt = "Por favor, escreva todas as respostas em português do Brasil, usando o formato de analogia com categorias como Substantivos, Verbos, Adjetivos, Advérbios e Frases."
@@ -49,11 +49,9 @@ class ModelSelector:
 
 def main():
     st.title("Dicionário Analógico da Língua Portuguesa")
-
     user_input = st.text_input("Digite uma palavra ou conceito:")
     model_selector = ModelSelector()
     selected_model = model_selector.select()
-
     message = Message()
 
     if user_input:
