@@ -1,6 +1,5 @@
 import os
 import streamlit as st
-from pathlib import Path
 from dotenv import load_dotenv
 from groq import Groq
 
@@ -30,7 +29,7 @@ class GroqAPI:
         return response_text
 
 class Message:
-    system_prompt = "Por favor, escreva todas as respostas em português do Brasil."
+    system_prompt = "Por favor, escreva todas as respostas em português do Brasil, usando o formato de analogia com categorias como Substantivos, Verbos, Adjetivos, Advérbios e Frases."
 
     def __init__(self):
         if "messages" not in st.session_state:
@@ -77,38 +76,11 @@ def main():
 
         st.title("Dicionário Analógico da Língua Portuguesa")
 
-        # Função para formatar a resposta no estilo desejado
-        def format_response(response):
-            response_parts = response.split(";")
-            formatted_response = ""
-            for part in response_parts:
-                if ':' in part:
-                    key, value = part.split(":", 1)
-                    formatted_response += f"**{key.strip()}**: {value.strip()}\n\n"
-                else:
-                    formatted_response += f"{part.strip()}\n\n"
-            return formatted_response
-
-        # Processa e exibe as respostas para cada categoria
-        with st.expander("Analogias"):
-            analogias = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
-            st.write(analogias)
-
-        with st.expander("Verbos"):
-            verbos = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
-            st.write(verbos)
-
-        with st.expander("Advérbios"):
-            adverbios = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
-            st.write(adverbios)
-
-        with st.expander("Adjetivos"):
-            adjetivos = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
-            st.write(adjetivos)
-
-        with st.expander("Frases"):
-            frases = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
-            st.write(frases)
+        # Gera uma única resposta para todas as categorias
+        full_response = " ".join(list(llm.response_stream(st.session_state.messages)))
+        
+        # Exibe a resposta completa, que deve incluir todas as categorias
+        st.write(full_response)
 
 if __name__ == "__main__":
     main()
