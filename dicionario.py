@@ -1,11 +1,11 @@
 import os  
 import streamlit as st  
 from pathlib import Path  
-from dotenv import load_dotenv  
+# from dotenv import load_dotenv  
 from groq import Groq  
 
-project_root = Path(__file__).resolve().parent
-load_dotenv(project_root / ".env")
+# project_root = Path(__file__).resolve().parent
+# load_dotenv(project_root / ".env")
 
 class GroqAPI:
     def __init__(self, model_name: str):
