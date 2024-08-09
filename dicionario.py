@@ -51,8 +51,9 @@ class Message:
         with st.chat_message("assistant"):
             for response in generator:
                 response_text += response
-                st.write(response)
+                st.write(response)  # Exibe cada parte do stream em tempo real
             st.session_state.messages.append({"role": "assistant", "content": response_text})
+        return response_text
 
 class ModelSelector:
     def __init__(self):
@@ -75,27 +76,27 @@ def main():
         message.add("user", user_input)
         message.display_chat_history()
 
-        analogias = list(llm.response_stream(st.session_state.messages))
-        verbos = list(llm.response_stream(st.session_state.messages))
-        adverbios = list(llm.response_stream(st.session_state.messages))
-        adjetivos = list(llm.response_stream(st.session_state.messages))
-        frases = list(llm.response_stream(st.session_state.messages))
-
         st.title("Dicionário Analógico da Língua Portuguesa")
 
+        # Processa e exibe as respostas para cada categoria
         with st.expander("Analogias"):
+            analogias = list(llm.response_stream(st.session_state.messages))
             st.write(analogias)
 
         with st.expander("Verbos"):
+            verbos = list(llm.response_stream(st.session_state.messages))
             st.write(verbos)
 
         with st.expander("Advérbios"):
+            adverbios = list(llm.response_stream(st.session_state.messages))
             st.write(adverbios)
 
         with st.expander("Adjetivos"):
+            adjetivos = list(llm.response_stream(st.session_state.messages))
             st.write(adjetivos)
 
         with st.expander("Frases"):
+            frases = list(llm.response_stream(st.session_state.messages))
             st.write(frases)
 
 if __name__ == "__main__":
