@@ -20,8 +20,8 @@ class GroqAPI:
             stream=False,  # Aqui, não estamos usando streaming para facilitar o processamento
             stop=None,
         )
-        # Acessa o conteúdo da resposta corretamente
-        return response.choices[0].message['content']
+        # Retorna o conteúdo da mensagem como texto puro
+        return response.choices[0].delta.get('content', '')
 
 class Message:
     system_prompt = "Por favor, escreva todas as respostas em português do Brasil, usando o formato de analogia com categorias como Substantivos, Verbos, Adjetivos, Advérbios e Frases."
