@@ -3,6 +3,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from groq import Groq
 
+# Carrega as variáveis de ambiente
 load_dotenv()
 
 class GroqAPI:
@@ -10,23 +11,16 @@ class GroqAPI:
         self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         self.model_name = model_name
 
-    def _response(self, message):
-        return self.client.chat.completions.create(
+    def get_response(self, messages):
+        response = self.client.chat.completions.create(
             model=self.model_name,
-            messages=message,
+            messages=messages,
             temperature=0,
             max_tokens=4096,
-            stream=True,
+            stream=False,  # Aqui, não estamos usando streaming para facilitar o processamento
             stop=None,
         )
-
-    def response_stream(self, message):
-        response_text = ""
-        for chunk in self._response(message):
-            if 'content' in chunk.choices[0].delta:
-                response_text += chunk.choices[0].delta.content
-                yield chunk.choices[0].delta.content
-        return response_text
+        return response['choices'][0]['message']['content']
 
 class Message:
     system_prompt = "Por favor, escreva todas as respostas em português do Brasil, usando o formato de analogia com categorias como Substantivos, Verbos, Adjetivos, Advérbios e Frases."
@@ -38,20 +32,8 @@ class Message:
     def add(self, role: str, content: str):
         st.session_state.messages.append({"role": role, "content": content})
 
-    def display_chat_history(self):
-        for message in st.session_state.messages:
-            if message["role"] == "system":
-                continue
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-
-    def display_stream(self, generator):
-        response_text = ""
-        for response in generator:
-            response_text += response
-            st.write(response)  # Exibe cada parte do stream em tempo real
-        st.session_state.messages.append({"role": "assistant", "content": response_text})
-        return response_text
+    def get_messages(self):
+        return st.session_state.messages
 
 class ModelSelector:
     def __init__(self):
@@ -63,24 +45,28 @@ class ModelSelector:
             return st.selectbox("Selecione um modelo:", self.models)
 
 def main():
+    st.title("Dicionário Analógico da Língua Portuguesa")
+
     user_input = st.text_input("Digite uma palavra ou conceito:")
-    model = ModelSelector()
-    selected_model = model.select()
+    model_selector = ModelSelector()
+    selected_model = model_selector.select()
 
     message = Message()
 
     if user_input:
-        llm = GroqAPI(selected_model)
-        message.add("user", user_input)
-        message.display_chat_history()
-
-        st.title("Dicionário Analógico da Língua Portuguesa")
-
-        # Gera uma única resposta para todas as categorias
-        full_response = " ".join(list(llm.response_stream(st.session_state.messages)))
+        groq_api = GroqAPI(selected_model)
         
-        # Exibe a resposta completa, que deve incluir todas as categorias
-        st.write(full_response)
+        # Adiciona a mensagem do usuário ao histórico
+        message.add("user", user_input)
+        
+        # Obtém a resposta da API
+        response = groq_api.get_response(message.get_messages())
+        
+        # Adiciona a resposta ao histórico
+        message.add("assistant", response)
+        
+        # Exibe a resposta formatada
+        st.write(response)
 
 if __name__ == "__main__":
     main()
