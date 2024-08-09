@@ -12,18 +12,26 @@ class GroqAPI:
         self.model_name = model_name
 
     def get_response(self, messages):
-        response = self.client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=0,
-            max_tokens=4096,
-            stream=False,  # Aqui, não estamos usando streaming para facilitar o processamento
-            stop=None,
-        )
-        # Debug: Imprimir a resposta completa para verificar a estrutura
-        st.write(response)
-        # Corrigido o acesso ao conteúdo da resposta
-        return response.choices[0].message.content if response.choices else ''
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=messages,
+                temperature=0,
+                max_tokens=4096,
+                stream=False,
+                stop=None,
+            )
+            # Debug: Imprimir a resposta completa para verificar a estrutura
+            st.write(response)
+            
+            # Acesso à resposta com verificação
+            if response.choices and hasattr(response.choices[0], 'message') and hasattr(response.choices[0].message, 'content'):
+                return response.choices[0].message.content
+            else:
+                return "Resposta inválida ou estrutura inesperada."
+        except Exception as e:
+            st.error(f"Erro ao obter resposta da API: {e}")
+            return "Erro ao obter resposta da API."
 
 class Message:
     system_prompt = "Por favor, escreva todas as respostas em português do Brasil, usando o formato de analogia com categorias como Substantivos, Verbos, Adjetivos, Advérbios e Frases."
