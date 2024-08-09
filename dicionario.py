@@ -22,9 +22,12 @@ class GroqAPI:
         )
 
     def response_stream(self, message):
+        response_text = ""
         for chunk in self._response(message):
-            if chunk.choices[0].delta.content:
+            if 'content' in chunk.choices[0].delta:
+                response_text += chunk.choices[0].delta.content
                 yield chunk.choices[0].delta.content
+        return response_text
 
 class Message:
     system_prompt = "Por favor, escreva todas as respostas em português do Brasil."
@@ -44,11 +47,12 @@ class Message:
                 st.markdown(message["content"])
 
     def display_stream(self, generator):
+        response_text = ""
         with st.chat_message("assistant"):
-            response_text = ""
             for response in generator:
                 response_text += response
-            st.write(response_text)
+                st.write(response)
+            st.session_state.messages.append({"role": "assistant", "content": response_text})
 
 class ModelSelector:
     def __init__(self):
@@ -71,11 +75,11 @@ def main():
         message.add("user", user_input)
         message.display_chat_history()
 
-        analogias = list(llm.response_stream(message.add("assistant", user_input)))
-        verbos = list(llm.response_stream(message.add("assistant", user_input)))
-        adverbios = list(llm.response_stream(message.add("assistant", user_input)))
-        adjetivos = list(llm.response_stream(message.add("assistant", user_input)))
-        frases = list(llm.response_stream(message.add("assistant", user_input)))
+        analogias = list(llm.response_stream(st.session_state.messages))
+        verbos = list(llm.response_stream(st.session_state.messages))
+        adverbios = list(llm.response_stream(st.session_state.messages))
+        adjetivos = list(llm.response_stream(st.session_state.messages))
+        frases = list(llm.response_stream(st.session_state.messages))
 
         st.title("Dicionário Analógico da Língua Portuguesa")
 
