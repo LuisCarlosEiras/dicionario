@@ -22,13 +22,14 @@ class GroqAPI:
                 stop=None,
             )
             # Debug: Imprimir a resposta completa para verificar a estrutura
+            st.write("Resposta completa da API:")
             st.write(response)
             
-            # Acesso à resposta com verificação
-            if response.choices and hasattr(response.choices[0], 'message') and hasattr(response.choices[0].message, 'content'):
+            # Acesso simplificado à resposta
+            if response.choices:
                 return response.choices[0].message.content
             else:
-                return "Resposta inválida ou estrutura inesperada."
+                return "Nenhuma escolha encontrada na resposta."
         except Exception as e:
             st.error(f"Erro ao obter resposta da API: {e}")
             return "Erro ao obter resposta da API."
@@ -80,4 +81,3 @@ def main():
 
 if __name__ == "__main__":
     main()
- 
