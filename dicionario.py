@@ -48,11 +48,10 @@ class Message:
 
     def display_stream(self, generator):
         response_text = ""
-        with st.chat_message("assistant"):
-            for response in generator:
-                response_text += response
-                st.write(response)  # Exibe cada parte do stream em tempo real
-            st.session_state.messages.append({"role": "assistant", "content": response_text})
+        for response in generator:
+            response_text += response
+            st.write(response)  # Exibe cada parte do stream em tempo real
+        st.session_state.messages.append({"role": "assistant", "content": response_text})
         return response_text
 
 class ModelSelector:
@@ -65,7 +64,7 @@ class ModelSelector:
             return st.selectbox("Selecione um modelo:", self.models)
 
 def main():
-    user_input = st.text_input("Digite uma palavra:")
+    user_input = st.text_input("Digite uma palavra ou conceito:")
     model = ModelSelector()
     selected_model = model.select()
 
@@ -78,25 +77,37 @@ def main():
 
         st.title("Dicionário Analógico da Língua Portuguesa")
 
+        # Função para formatar a resposta no estilo desejado
+        def format_response(response):
+            response_parts = response.split(";")
+            formatted_response = ""
+            for part in response_parts:
+                if ':' in part:
+                    key, value = part.split(":", 1)
+                    formatted_response += f"**{key.strip()}**: {value.strip()}\n\n"
+                else:
+                    formatted_response += f"{part.strip()}\n\n"
+            return formatted_response
+
         # Processa e exibe as respostas para cada categoria
         with st.expander("Analogias"):
-            analogias = list(llm.response_stream(st.session_state.messages))
+            analogias = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
             st.write(analogias)
 
         with st.expander("Verbos"):
-            verbos = list(llm.response_stream(st.session_state.messages))
+            verbos = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
             st.write(verbos)
 
         with st.expander("Advérbios"):
-            adverbios = list(llm.response_stream(st.session_state.messages))
+            adverbios = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
             st.write(adverbios)
 
         with st.expander("Adjetivos"):
-            adjetivos = list(llm.response_stream(st.session_state.messages))
+            adjetivos = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
             st.write(adjetivos)
 
         with st.expander("Frases"):
-            frases = list(llm.response_stream(st.session_state.messages))
+            frases = format_response(" ".join(list(llm.response_stream(st.session_state.messages))))
             st.write(frases)
 
 if __name__ == "__main__":
